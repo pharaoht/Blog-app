@@ -33,7 +33,7 @@ app.get("/blogs", function(req, res){
 });
 
 //New Route
-app.get("blogs/new/", function(req, res){
+app.get("/blogs/new", function(req, res){
   res.render("new");
 })
 //Create Route
