@@ -1,14 +1,16 @@
-var bodyParser  = require("body-parser"),
-methodOverride  = require("method-override"),
-mongoose        = require("mongoose"),
-express         = require("express"),
-app             = express();
+var bodyParser    = require("body-parser"),
+expressSanitizer  = require("express-sanitizer")
+methodOverride    = require("method-override"),
+mongoose          = require("mongoose"),
+express           = require("express"),
+app               = express();
 //App config
 mongoose.connect("mongodb://localhost/restful_blog_app");
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(methodOverride("_method"))
+app.use(expressSanitizer());
 //mongoose model config
 var blogSchema = new mongoose.Schema({
   title: String,
@@ -89,7 +91,14 @@ app.put("/blogs/:id", function(req, res){
 
 //Delete Route
 app.delete("/blogs/:id", function(req, res){
-  res.send("This page will be destroyed")
+  Blog.findByIdAndRemove(req.params.id, function(err){
+    if(err){
+      console.log("something went wrong captain")
+    }
+    else{
+      res.redirect("/blogs");
+    }
+  })
 })
 
 
